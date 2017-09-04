@@ -1,6 +1,6 @@
 .PHONY: build clean freebsd
 
-VERSION := 1.0.0
+VERSION := 1.0.1
 BUILDNUMBER := 1
 
 # fpm settings

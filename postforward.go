@@ -122,7 +122,7 @@ func main() {
 	}
 
 	mailreader := io.MultiReader(headerRewriter(&buffer, extraHeaders), os.Stdin)
-	args := append([]string{"-f", returnPath}, flag.Args()...)
+	args := append([]string{"-i", "-f", returnPath}, flag.Args()...)
 	sendmail := exec.Command(*sendmailPath, args...)
 	sendmail.Stdin = mailreader
 	sendmail.Stdout = os.Stdout
