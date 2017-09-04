@@ -69,6 +69,12 @@ In `main.cf`, configure `recipient_canonical_maps` and
 [recommended by PostSRSd](https://github.com/roehling/postsrsd#configuration)
 but *do not* set `sender_canonical_maps` or `sender_canonical_classes`.
 
+Beware that Postforward expects to be called for a single recipient at a
+time (although it can *forward* to multiple recipients at once) so be sure
+to set [transport_destination_recipient_limit](http://www.postfix.org/postconf.5.html#transport_destination_recipient_limit)
+to 1 when using it with the `pipe(8)` daemon. See also
+[SINGLE-RECIPIENT DELIVERY](http://www.postfix.org/pipe.8.html).
+
 -----------------------------------------------------------------------------
 
 Note that in case of process errors, postfix bounces emails with the full
