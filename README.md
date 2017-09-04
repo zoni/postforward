@@ -45,6 +45,10 @@ cd ~/go/src/github.com/zoni/postforward
 make
 ```
 
+This will create a binary called `postforward` which may be installed on
+the target server(s). Go applications are statically linked by default so
+no additional dependencies are needed.
+
 
 Configuration
 -------------
