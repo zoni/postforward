@@ -1,4 +1,4 @@
-.PHONY: build clean freebsd
+.DEFAULT_GOAL := build
 
 VERSION := 1.0.1
 BUILDNUMBER := 1
@@ -47,4 +47,4 @@ freebsd:
 
 .PHONY: clean
 clean:
-	rm -rf postforward usr/
+	rm -rf postforward usr/ *.txz *.deb
