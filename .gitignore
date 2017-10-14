@@ -1,3 +1,4 @@
 *.txz
+*.deb
 postforward
 usr/

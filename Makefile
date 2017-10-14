@@ -15,10 +15,26 @@ EXTRA_ARGS :=
 build:
 	go build -ldflags="-s -w" *.go
 
+
+.PHONY: debian
+debian:
+	mkdir -p usr/bin
+	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o usr/bin/postforward *.go
+
+	fpm -f -t deb -s dir \
+		--name "$(NAME)" \
+		--version "$(VERSION)-$(BUILDNUMBER)" \
+		--architecture "$(ARCH)" \
+		--maintainer "$(MAINTAINER)" \
+		--description "$(DESCRIPTION)" \
+		$(EXTRA_ARGS) \
+		usr/
+
+
 .PHONY: freebsd
 freebsd:
 	mkdir -p usr/local/bin
-	GOOS=freebsd go build -ldflags="-s -w" -o usr/local/bin/postforward *.go
+	GOOS=freebsd GOARCH=amd64 go build -ldflags="-s -w" -o usr/local/bin/postforward *.go
 
 	fpm -f -t freebsd -s dir \
 		--name "$(NAME)" \
