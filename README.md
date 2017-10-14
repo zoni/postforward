@@ -49,6 +49,11 @@ This will create a binary called `postforward` which may be installed on
 the target server(s). Go applications are statically linked by default so
 no additional dependencies are needed.
 
+The makefile also contains targets to build native packages for FreeBSD
+and Debian-based operating systems (`make freebsd` and `make debian`
+respectively). These require [fpm](https://github.com/jordansissel/fpm) to
+be installed.
+
 
 Configuration
 -------------
