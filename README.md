@@ -129,3 +129,9 @@ License
 
 Postforward is offered under the 2-Clause BSD license. See
 [LICENSE.txt](LICENSE.txt) for the full license text.
+
+
+Changelog
+---------
+
+See [CHANGES](CHANGES.md).
