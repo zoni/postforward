@@ -82,6 +82,15 @@ to 1 when using it with the `pipe(8)` daemon. See also
 
 -----------------------------------------------------------------------------
 
+The postfix `local(8)` delivery agent uses a highly sanitized environment
+for executed processes for security reasons. Depending on your operating
+system, the default `$PATH` setting may be too strict for postforward to
+locate the `sendmail` binary (Debian/Ubuntu are known to have this issue).
+If this is the case for you, a custom `$PATH` may be set by supplying the
+`--path` argument. For example: `--path /usr/sbin:/sbin:/usr/bin:/bin`
+
+-----------------------------------------------------------------------------
+
 Note that in case of process errors, postfix bounces emails with the full
 process argument string in the DSN message which could leak internal
 information such as the forwarding address. This is default postfix

@@ -26,10 +26,11 @@ const (
 	ExTempFail = 75
 )
 
-var srsAddr = flag.String("srs-addr", "localhost:10001", "TCP address for SRS lookups")
-var rpHeader = flag.String("rp-header", "Return-Path", "header name containing the return-path (MAIL FROM) value")
-var sendmailPath = flag.String("sendmail-path", "sendmail", "path to the sendmail binary")
 var dryRun = flag.Bool("dry-run", false, "show what would be done, don't actually forward mail")
+var path = flag.String("path", "", "override $PATH with this value when executing binaries")
+var rpHeader = flag.String("rp-header", "Return-Path", "header name containing the return-path (MAIL FROM) value")
+var sendmailPath = flag.String("sendmail-path", "sendmail", "path to the sendmail binary (deprecated: use --path instead)")
+var srsAddr = flag.String("srs-addr", "localhost:10001", "TCP address for SRS lookups")
 
 // lookupTCP performs a TCP table lookup for the specified key against the
 // given address.
@@ -98,6 +99,12 @@ func headerRewriter(in io.Reader, headers []string) io.Reader {
 func main() {
 	flag.Parse()
 	hostname, _ := os.Hostname()
+	if *path != "" {
+		err := os.Setenv("PATH", *path)
+		if err != nil {
+			die(fmt.Sprintf("Unable to set $PATH: %s", err), ExTempFail)
+		}
+	}
 
 	buffer := bytes.Buffer{}
 	message, err := mail.ReadMessage(io.TeeReader(os.Stdin, &buffer))
