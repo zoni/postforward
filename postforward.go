@@ -96,9 +96,20 @@ func headerRewriter(in io.Reader, headers []string) io.Reader {
 	return &buffer
 }
 
+// getHostname returns the system hostname. It tries to get the value from
+// postfix, falling back to os.Hostname() when that fails.
+func getHostname() string {
+	out, err := exec.Command("postconf", "-h", "myhostname").Output()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "warning: unable to get hostname from postfix (%v)\n", err)
+		hostname, _ := os.Hostname()
+		return hostname
+	}
+	return string(bytes.TrimSpace(out))
+}
+
 func main() {
 	flag.Parse()
-	hostname, _ := os.Hostname()
 	if *path != "" {
 		err := os.Setenv("PATH", *path)
 		if err != nil {
@@ -119,7 +130,7 @@ func main() {
 
 	extraHeaders := []string{
 		fmt.Sprintf("Received: by %s (Postforward); %s",
-			hostname, time.Now().Format("Mon, 2 Jan 2006 15:04:05 -0700")),
+			getHostname(), time.Now().Format("Mon, 2 Jan 2006 15:04:05 -0700")),
 		fmt.Sprintf("X-Original-Return-Path: %s", returnPath)}
 
 	returnPath = returnPath[1 : len(returnPath)-1] // Remove <> brackets
