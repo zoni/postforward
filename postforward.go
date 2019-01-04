@@ -90,9 +90,10 @@ func headerRewriter(in io.Reader, headers []string) io.Reader {
 		}
 
 		if linenum == 1 {
+			lineEnding := guessLineEnding(line)
 			for _, header := range headers {
 				buffer.WriteString(header)
-				buffer.Write([]byte("\r\n"))
+				buffer.Write(lineEnding)
 			}
 
 			if bytes.HasPrefix(line, []byte("From ")) {
@@ -113,6 +114,25 @@ func getHostname() string {
 		return hostname
 	}
 	return string(bytes.TrimSpace(out))
+}
+
+// guessLineEnding guesses the correct line endings to use based on the line
+// ending used in the supplied input line. This mimics postfix behavior, as
+// seen in sendmail.c:
+//
+// if (strip_cr == STRIP_CR_DUNNO && type == REC_TYPE_NORM) {
+//     if (VSTRING_LEN(buf) > 0 && vstring_end(buf)[-1] == '\r')
+//         strip_cr = STRIP_CR_DO;
+//     else
+//         strip_cr = STRIP_CR_DONT;
+//
+// Note that based on http://www.postfix.org/postconf.5.html#sendmail_fix_line_endings,
+// we should be able to get away with hard-coding \r\n or \n as well.
+func guessLineEnding(line []byte) []byte {
+	if bytes.HasSuffix(line, []byte("\r\n")) {
+		return []byte("\r\n")
+	}
+	return []byte("\n")
 }
 
 func main() {
