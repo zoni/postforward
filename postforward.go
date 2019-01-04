@@ -76,14 +76,23 @@ func die(msg string, code int) {
 // the cleanup daemon) will replace this header automatically.
 func headerRewriter(in io.Reader, headers []string) io.Reader {
 	buffer := bytes.Buffer{}
-	scanner := bufio.NewScanner(in)
+	reader := bufio.NewReader(in)
 	linenum := 0
-	for scanner.Scan() {
+	for {
 		linenum++
-		line := scanner.Bytes()
+		line, err := reader.ReadBytes('\n')
+		if err != nil {
+			if err == io.EOF {
+				buffer.Write(line)
+				return &buffer
+			}
+			die(fmt.Sprintf("Unexpected error occurred while reading input: %s", err), ExTempFail)
+		}
+
 		if linenum == 1 {
 			for _, header := range headers {
-				buffer.WriteString(header + "\r\n")
+				buffer.WriteString(header)
+				buffer.Write([]byte("\r\n"))
 			}
 
 			if bytes.HasPrefix(line, []byte("From ")) {
@@ -91,9 +100,7 @@ func headerRewriter(in io.Reader, headers []string) io.Reader {
 			}
 		}
 		buffer.Write(line)
-		buffer.Write([]byte("\r\n"))
 	}
-	return &buffer
 }
 
 // getHostname returns the system hostname. It tries to get the value from
