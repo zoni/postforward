@@ -1,3 +1,9 @@
+v1.1.1 / 2019-02-22
+===================
+
+  * Intelligently guess correct line endings
+  * Prevent insertion of additional linebreak in message body
+
 v1.1.0 / 2017-10-28
 ===================
 
