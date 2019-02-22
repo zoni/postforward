@@ -119,7 +119,7 @@ negligible in relation to the total processing cost of a complete email
 transaction.
 
 Postforward takes care not to buffer entire messages in memory and is
-therefor safe to use on very large emails.  Only message headers are
+therefore safe to use on very large emails.  Only message headers are
 buffered in memory for processing, body content is streamed directly into
 sendmail.
 
